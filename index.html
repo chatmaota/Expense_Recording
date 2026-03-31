@@ -720,15 +720,18 @@
 
       if(API_URL){
         try{
-          await fetch(API_URL,{
-            method:'POST',
-            headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body: JSON.stringify({
-              action: index >= 0 ? 'updateTransaction' : 'addTransaction',
-              sheetName:SHEET_NAME,
-              data:item
-            })
-          });
+          await fetch(API_URL, {
+  method: 'POST',
+  mode: 'no-cors',
+  headers: {
+    'Content-Type': 'text/plain;charset=utf-8'
+  },
+  body: JSON.stringify({
+    action: index >= 0 ? 'updateTransaction' : 'addTransaction',
+    sheetName: SHEET_NAME,
+    data: item
+  })
+});
         }catch(err){
           console.error(err);
           toast(index >= 0 ? 'แก้ไขในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ' : 'บันทึกในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ');
