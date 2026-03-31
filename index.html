@@ -681,6 +681,29 @@
         '<div class="card empty">ไม่พบรายการ</div>';
     }
 
+    async function syncToSheet(payload){
+      if (!API_URL) return false;
+
+      try{
+        console.log('Sending to Apps Script:', payload);
+
+        await fetch(API_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        console.log('Request sent to Apps Script');
+        return true;
+      }catch(err){
+        console.error('Apps Script sync error:', err);
+        return false;
+      }
+    }
+
     async function saveTransaction(event){
       event.preventDefault();
 
@@ -719,22 +742,16 @@
       setTransactions(list);
 
       if(API_URL){
-        try{
-          await fetch(API_URL, {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: {
-    'Content-Type': 'text/plain;charset=utf-8'
-  },
-  body: JSON.stringify({
-    action: index >= 0 ? 'updateTransaction' : 'addTransaction',
-    sheetName: SHEET_NAME,
-    data: item
-  })
-});
-        }catch(err){
-          console.error(err);
-          toast(index >= 0 ? 'แก้ไขในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ' : 'บันทึกในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ');
+        const ok = await syncToSheet({
+          action: index >= 0 ? 'updateTransaction' : 'addTransaction',
+          sheetName: SHEET_NAME,
+          data: item
+        });
+
+        if(!ok){
+          toast(index >= 0
+            ? 'แก้ไขในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ'
+            : 'บันทึกในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ');
         }
       }
 
@@ -786,10 +803,24 @@
       toast('โหลดข้อมูลเข้าฟอร์มแล้ว');
     }
 
-    function deleteTransaction(id){
+    async function deleteTransaction(id){
       if(!confirm('ต้องการลบรายการนี้ใช่ไหม?')) return;
+
       const list = getTransactions().filter(x => x.id !== id);
       setTransactions(list);
+
+      if(API_URL){
+        const ok = await syncToSheet({
+          action: 'deleteTransaction',
+          sheetName: SHEET_NAME,
+          data: { id }
+        });
+
+        if(!ok){
+          toast('ลบในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ');
+        }
+      }
+
       renderDashboard();
       renderTransactions();
       toast('ลบรายการแล้ว');
