@@ -197,7 +197,7 @@
     .bar{height:10px;background:var(--soft2);border-radius:999px;overflow:hidden}
     .bar > span{display:block;height:100%;background:linear-gradient(90deg,#7aa8ff,#2563eb);border-radius:999px}
 
-    .trend-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;margin-top:8px;min-height:180px}
+    .trend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(42px,1fr));gap:8px;align-items:end;margin-top:8px;min-height:180px}
     .trend-col{display:grid;gap:8px;align-items:end;justify-items:center}
     .trend-stack{width:100%;max-width:38px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;height:140px}
     .trend-bar-income,.trend-bar-expense{width:100%;border-radius:999px 999px 10px 10px;min-height:6px}
@@ -404,10 +404,16 @@
       </section>
 
       <div class="section-title">
-        <h2>เทรนด์ 6 เดือน</h2>
+        <h2>เทรนด์ข้อมูล</h2>
         <span id="trendCaption">รายรับ vs รายจ่าย</span>
       </div>
       <section class="card">
+        <div class="chips" style="margin-bottom:10px">
+          <button class="chip active" data-trend-mode="month" onclick="setTrendMode(this)">รายเดือน</button>
+          <button class="chip" data-trend-mode="day" onclick="setTrendMode(this)">รายวัน</button>
+          <button class="chip" data-trend-mode="year" onclick="setTrendMode(this)">รายปี</button>
+        </div>
+        <div class="chips" style="margin-bottom:12px" id="trendRangeChips"></div>
         <div class="trend-grid" id="trendChart"></div>
       </section>
 
@@ -610,6 +616,8 @@
     let isSaving = false;
     let passcodeFlow = 'unlock';
     let passcodeBuffer = '';
+    let trendMode = 'month';
+    let trendRange = 6;
 
     const API_URL_KEY = 'paotung_api_url';
     const SHEET_NAME_KEY = 'paotung_sheet_name';
@@ -637,6 +645,7 @@
     renderCategoryOptions();
     initPassPad();
     initLockScreen();
+    renderTrendRangeChips();
 
     function toast(msg){
       const t = document.getElementById('toast');
@@ -729,6 +738,58 @@
       document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       btn.classList.add('active');
       renderTransactions();
+    }
+
+    function setTrendMode(btn){
+      trendMode = btn.dataset.trendMode || 'month';
+      document.querySelectorAll('[data-trend-mode]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if(trendMode === 'day') trendRange = 7;
+      else if(trendMode === 'month') trendRange = 6;
+      else trendRange = 3;
+
+      renderTrendRangeChips();
+      renderDashboard();
+    }
+
+    function setTrendRange(btn){
+      trendRange = Number(btn.dataset.trendRange || 6);
+      document.querySelectorAll('#trendRangeChips [data-trend-range]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderDashboard();
+    }
+
+    function renderTrendRangeChips(){
+      const wrap = document.getElementById('trendRangeChips');
+      if(!wrap) return;
+
+      let ranges = [];
+      if(trendMode === 'day'){
+        ranges = [
+          { value: 7, label: '7 วัน' },
+          { value: 30, label: '30 วัน' }
+        ];
+      }else if(trendMode === 'month'){
+        ranges = [
+          { value: 3, label: '3 เดือน' },
+          { value: 6, label: '6 เดือน' },
+          { value: 12, label: '12 เดือน' }
+        ];
+      }else{
+        ranges = [
+          { value: 3, label: '3 ปี' },
+          { value: 5, label: '5 ปี' }
+        ];
+      }
+
+      wrap.innerHTML = ranges.map(r => `
+        <button class="chip ${Number(trendRange) === Number(r.value) ? 'active' : ''}"
+                data-trend-range="${r.value}"
+                onclick="setTrendRange(this)">
+          ${r.label}
+        </button>
+      `).join('');
     }
 
     function ensureCategories(){
@@ -1003,23 +1064,71 @@
     }
 
     function renderTrendChart(data){
-      const months = [];
       const now = new Date();
-      for(let i = 5; i >= 0; i--){
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
-        months.push({
-          key,
-          label: d.toLocaleDateString('th-TH', { month: 'short' })
-        });
+      let stats = [];
+
+      if(trendMode === 'day'){
+        for(let i = trendRange - 1; i >= 0; i--){
+          const d = new Date(now);
+          d.setDate(now.getDate() - i);
+
+          const key = d.toISOString().slice(0,10);
+          const dayData = data.filter(x => String(x.date).slice(0,10) === key);
+          const income = dayData.filter(x => x.type === 'income').reduce((s,x) => s + Number(x.amount || 0), 0);
+          const expense = dayData.filter(x => x.type === 'expense').reduce((s,x) => s + Number(x.amount || 0), 0);
+
+          stats.push({
+            key,
+            label: d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }),
+            income,
+            expense,
+            net: income - expense
+          });
+        }
+      }else if(trendMode === 'month'){
+        for(let i = trendRange - 1; i >= 0; i--){
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
+          const monthData = data.filter(x => String(x.date).startsWith(key));
+          const income = monthData.filter(x => x.type === 'income').reduce((s,x) => s + Number(x.amount || 0), 0);
+          const expense = monthData.filter(x => x.type === 'expense').reduce((s,x) => s + Number(x.amount || 0), 0);
+
+          stats.push({
+            key,
+            label: d.toLocaleDateString('th-TH', {
+              month: 'short',
+              year: trendRange >= 12 ? '2-digit' : undefined
+            }),
+            income,
+            expense,
+            net: income - expense
+          });
+        }
+      }else{
+        for(let i = trendRange - 1; i >= 0; i--){
+          const year = now.getFullYear() - i;
+          const yearData = data.filter(x => String(x.date).startsWith(String(year)));
+          const income = yearData.filter(x => x.type === 'income').reduce((s,x) => s + Number(x.amount || 0), 0);
+          const expense = yearData.filter(x => x.type === 'expense').reduce((s,x) => s + Number(x.amount || 0), 0);
+
+          stats.push({
+            key: String(year),
+            label: String(year + 543),
+            income,
+            expense,
+            net: income - expense
+          });
+        }
       }
-      const stats = months.map(m => {
-        const monthData = data.filter(x => String(x.date).startsWith(m.key));
-        const income = monthData.filter(x => x.type === 'income').reduce((s,x) => s + Number(x.amount || 0), 0);
-        const expense = monthData.filter(x => x.type === 'expense').reduce((s,x) => s + Number(x.amount || 0), 0);
-        return { ...m, income, expense, net: income - expense };
-      });
+
       const max = Math.max(1, ...stats.map(x => Math.max(x.income, x.expense)));
+
+      let caption = 'รายรับ vs รายจ่าย';
+      if(trendMode === 'day') caption = `รายรับ vs รายจ่าย (${trendRange} วันล่าสุด)`;
+      else if(trendMode === 'month') caption = `รายรับ vs รายจ่าย (${trendRange} เดือนล่าสุด)`;
+      else caption = `รายรับ vs รายจ่าย (${trendRange} ปีย้อนหลัง)`;
+
+      document.getElementById('trendCaption').textContent = caption;
       document.getElementById('trendChart').innerHTML = stats.map(s => `
         <div class="trend-col">
           <div class="trend-stack">
