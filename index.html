@@ -114,6 +114,16 @@
     .checkbox-item{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
     .split-total{font-size:22px;font-weight:800}
 
+
+    .inline-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .inline-actions > *{flex:1}
+    .split-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px}
+    .split-stat-card{border:1px solid var(--line);border-radius:18px;padding:12px;background:linear-gradient(180deg,var(--card),var(--soft))}
+    .split-stat-card .label{font-size:12px;color:var(--muted)}
+    .split-stat-card .value{margin-top:4px;font-size:18px;font-weight:800}
+    .split-balance-positive{color:var(--green)}
+    .split-balance-negative{color:var(--red)}
+
     @media (max-width:370px){
       .quick-actions,.pay-grid{grid-template-columns:repeat(2,1fr)} .row-2,.hero-grid,.row-3{grid-template-columns:1fr}
       .bottom-nav{grid-template-columns:repeat(6,1fr)}
@@ -239,25 +249,47 @@
       max-width:320px;
       border:1px solid var(--line);
     }
-    .loading-card-piggy{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-    .piggy-loader{position:relative;width:120px;height:100px;margin:0 auto 14px}
-    .piggy-bank{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:96px;height:66px;border-radius:48px 48px 42px 42px;background:linear-gradient(180deg,#f9a8d4 0%, #ec4899 100%);box-shadow:inset 0 -8px 0 rgba(255,255,255,.18), 0 10px 22px rgba(236,72,153,.22)}
-    .piggy-ear{position:absolute;top:-8px;left:16px;width:18px;height:18px;border-radius:6px 14px 2px 14px;background:#fb7185;transform:rotate(-18deg)}
-    .piggy-slot{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:22px;height:5px;border-radius:999px;background:rgba(15,23,42,.25)}
-    .piggy-eye{position:absolute;top:24px;right:20px;width:8px;height:8px;border-radius:999px;background:#1f2937;box-shadow:0 0 0 3px rgba(255,255,255,.14)}
-    .piggy-snout{position:absolute;right:8px;top:28px;width:24px;height:18px;border-radius:999px;background:#fda4af}
-    .piggy-snout::before,.piggy-snout::after{content:"";position:absolute;top:6px;width:4px;height:4px;border-radius:999px;background:rgba(15,23,42,.26)}
-    .piggy-snout::before{left:7px}.piggy-snout::after{right:7px}
-    .piggy-leg{position:absolute;bottom:-5px;width:12px;height:16px;border-radius:0 0 8px 8px;background:#db2777}
-    .piggy-leg-1{left:24px}.piggy-leg-2{right:24px}
-    .piggy-loader .coin{position:absolute;top:-2px;width:18px;height:18px;border-radius:999px;background:linear-gradient(180deg,#fde68a,#f59e0b);box-shadow:inset 0 0 0 3px rgba(255,255,255,.22),0 6px 12px rgba(245,158,11,.22);animation:coinDropSmooth 1.35s infinite ease-in}
+    .loading-card-piggy{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    .piggy-loader{position:relative;width:146px;height:126px;margin:0 auto 14px}
+    .piggy-loader .coin{position:absolute;top:-2px;width:18px;height:18px;border-radius:999px;background:linear-gradient(180deg,#fff2a8,#f59e0b);box-shadow:inset 0 0 0 3px rgba(255,255,255,.28),0 8px 16px rgba(245,158,11,.22);animation:coinDropFront 1.55s infinite ease-in}
     .piggy-loader .coin::after{content:"฿";position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:800;color:#92400e}
-    .piggy-loader .coin-1{left:22px;animation-delay:0s}
-    .piggy-loader .coin-2{left:50%;transform:translateX(-50%);animation-delay:.24s}
-    .piggy-loader .coin-3{right:22px;animation-delay:.48s}
+    .piggy-loader .coin-1{left:30px;animation-delay:0s}
+    .piggy-loader .coin-2{left:64px;animation-delay:.22s}
+    .piggy-loader .coin-3{right:30px;animation-delay:.44s}
+    .piggy-front{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:116px;height:94px;animation:piggyBounce 1.8s infinite ease-in-out}
+    .piggy-body{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:108px;height:76px;border-radius:48px 48px 44px 44px;background:radial-gradient(circle at 32% 18%,#ffe7f4 0%,#ffc8e4 18%,#f9a8d4 36%,#f472b6 68%,#ec4899 100%);box-shadow:inset 0 -12px 0 rgba(219,39,119,.16), inset 0 10px 14px rgba(255,255,255,.24), 0 18px 36px rgba(236,72,153,.22)}
+    .piggy-body::before{content:"";position:absolute;left:14px;top:12px;width:34px;height:18px;border-radius:999px;background:rgba(255,255,255,.30);filter:blur(1px);transform:rotate(-12deg)}
+    .piggy-body::after{content:"";position:absolute;right:12px;top:14px;width:18px;height:18px;border-radius:999px;background:rgba(255,255,255,.16)}
+    .piggy-ear{position:absolute;top:4px;width:24px;height:26px;background:linear-gradient(180deg,#ff8fb8,#f472b6);border-radius:16px 16px 5px 5px;box-shadow:inset 0 4px 0 rgba(255,255,255,.20)}
+    .piggy-ear::after{content:"";position:absolute;inset:5px 5px 8px;background:rgba(255,255,255,.22);border-radius:12px 12px 4px 4px}
+    .piggy-ear-left{left:16px;transform:rotate(-20deg)}
+    .piggy-ear-right{right:16px;transform:rotate(20deg)}
+    .piggy-slot{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:26px;height:6px;border-radius:999px;background:rgba(15,23,42,.22)}
+    .piggy-eye{position:absolute;top:31px;width:10px;height:10px;border-radius:999px;background:#1f2937;box-shadow:0 0 0 3px rgba(255,255,255,.14);animation:pigBlink 3.1s infinite}
+    .piggy-eye-left{left:31px}
+    .piggy-eye-right{right:31px}
+    .piggy-cheek{position:absolute;top:40px;width:14px;height:14px;border-radius:999px;background:rgba(255,255,255,.22)}
+    .piggy-cheek-left{left:18px}
+    .piggy-cheek-right{right:18px}
+    .piggy-snout{position:absolute;left:50%;top:36px;transform:translateX(-50%);width:32px;height:24px;border-radius:999px;background:linear-gradient(180deg,#ffb3bf,#fb7185);box-shadow:inset 0 3px 0 rgba(255,255,255,.22),0 4px 8px rgba(251,113,133,.18)}
+    .piggy-snout::before,.piggy-snout::after{content:"";position:absolute;top:9px;width:4px;height:6px;border-radius:999px;background:rgba(15,23,42,.24)}
+    .piggy-snout::before{left:9px}.piggy-snout::after{right:9px}
+    .piggy-mouth{position:absolute;left:50%;top:62px;transform:translateX(-50%);width:16px;height:8px;border:2px solid rgba(219,39,119,.36);border-top:none;border-left-color:transparent;border-right-color:transparent;border-radius:0 0 14px 14px}
+    .piggy-side-arm{position:absolute;top:46px;width:12px;height:22px;border-radius:999px;background:linear-gradient(180deg,#f472b6,#db2777);opacity:.95}
+    .piggy-side-arm.left{left:-2px;transform:rotate(12deg)}
+    .piggy-side-arm.right{right:-2px;transform:rotate(-12deg)}
+    .piggy-glow{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:124px;height:76px;border-radius:999px;background:radial-gradient(circle, rgba(255,182,213,.32) 0%, rgba(255,182,213,.08) 58%, rgba(255,182,213,0) 80%)}
+    .sparkle{position:absolute;width:12px;height:12px;background:rgba(255,255,255,.88);clip-path:polygon(50% 0%,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0% 50%,38% 38%);filter:drop-shadow(0 0 8px rgba(255,255,255,.45));animation:sparkleTwinkle 1.8s infinite ease-in-out}
+    .sparkle.s1{left:20px;top:18px}
+    .sparkle.s2{right:22px;top:24px;animation-delay:.35s;transform:scale(.8)}
+    .piggy-shadow{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:82px;height:14px;border-radius:999px;background:rgba(15,23,42,.12);filter:blur(4px);animation:shadowBounce 1.8s infinite ease-in-out}
     .loading-title{font-weight:800;font-size:22px;color:var(--text);letter-spacing:-.5px}
     .loading-sub{margin-top:8px;font-size:14px}
-    @keyframes coinDropSmooth{0%{transform:translateY(-8px) scale(.86);opacity:0}20%{opacity:1}70%{transform:translateY(38px) scale(1)}100%{transform:translateY(54px) scale(.92);opacity:0}}
+    @keyframes coinDropFront{0%{transform:translateY(-10px) scale(.84);opacity:0}18%{opacity:1}68%{transform:translateY(40px) scale(1)}100%{transform:translateY(56px) scale(.9);opacity:0}}
+    @keyframes pigBlink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.1)}}
+    @keyframes piggyBounce{0%,100%{transform:translateX(-50%) translateY(0) scale(1)}35%{transform:translateX(-50%) translateY(-7px) scale(1.03)}65%{transform:translateX(-50%) translateY(0) scale(.99)}}
+    @keyframes shadowBounce{0%,100%{transform:translateX(-50%) scale(1);opacity:.18}35%{transform:translateX(-50%) scale(.9);opacity:.12}65%{transform:translateX(-50%) scale(1);opacity:.18}}
+    @keyframes sparkleTwinkle{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.12)}}
     .submit{
       border:none;
       border-radius:20px;
@@ -344,12 +376,34 @@
 <div class="toast" id="toast"></div>
 
 <div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-card">
-    <div class="modern-spinner"></div>
-    <div style="font-weight:800;font-size:22px;color:var(--text);letter-spacing:-0.5px;" id="loadingTitle">กำลังประมวลผล</div>
-    <div class="hint" id="loadingSub" style="margin-top:10px;font-size:14px;">กรุณารอสักครู่ ระบบกำลังจัดการข้อมูลให้คุณ</div>
+  <div class="loading-card loading-card-piggy">
+    <div class="piggy-loader" aria-hidden="true">
+      <div class="sparkle s1"></div>
+      <div class="sparkle s2"></div>
+      <div class="coin coin-1"></div>
+      <div class="coin coin-2"></div>
+      <div class="coin coin-3"></div>
+      <div class="piggy-glow"></div>
+      <div class="piggy-front">
+        <div class="piggy-ear piggy-ear-left"></div>
+        <div class="piggy-ear piggy-ear-right"></div>
+        <div class="piggy-body">
+          <div class="piggy-slot"></div>
+          <div class="piggy-eye piggy-eye-left"></div>
+          <div class="piggy-eye piggy-eye-right"></div>
+          <div class="piggy-cheek piggy-cheek-left"></div>
+          <div class="piggy-cheek piggy-cheek-right"></div>
+          <div class="piggy-snout"></div>
+          <div class="piggy-mouth"></div>
+          <div class="piggy-side-arm left"></div>
+          <div class="piggy-side-arm right"></div>
+        </div>
+        <div class="piggy-shadow"></div>
+      </div>
+    </div>
+    <div class="loading-title" id="loadingTitle">กำลังประมวลผล</div>
+    <div class="hint loading-sub" id="loadingSub">กรุณารอสักครู่ ระบบกำลังจัดการข้อมูลให้คุณ</div>
   </div>
-</div>
 </div>
 
 <div class="lock-screen" id="lockScreen">
@@ -1112,6 +1166,20 @@ function getSplitDraftItems(){
   const customItems = splitDraft.customItems.map(x=>({ ...x, id:x.id||('custom_'+Date.now()+Math.random()) }));
   return [...txItems, ...customItems];
 }
+
+function getSplitCounts(summary){
+  return {
+    txCount: splitDraft.selectedTxIds.length,
+    customCount: splitDraft.customItems.length,
+    itemCount: (summary?.items||[]).length
+  };
+}
+function formatSplitBalanceText(value){
+  const abs = Math.abs(Number(value||0));
+  if(abs <= 0.009) return 'สมดุลแล้ว';
+  return value >= 0 ? `รับคืน ${formatMoney(abs)}` : `ต้องจ่าย ${formatMoney(abs)}`;
+}
+
 function calculateSplitSummary(){
   const members = splitDraft.members || [];
   const items = getSplitDraftItems();
@@ -1157,23 +1225,37 @@ function renderSplitCustomItems(){
 function renderSplitSummary(){
   const box = document.getElementById('splitSummaryContent');
   const sum = calculateSplitSummary();
+  const counts = getSplitCounts(sum);
   document.getElementById('splitGrandTotalText').textContent = `รวม ${formatMoney(sum.total)}`;
   if(!sum.members.length){
     box.innerHTML = '<div class="split-empty">กรอกสมาชิกก่อนเพื่อคำนวณการหารเงิน</div>';
     return;
   }
   const memberChips = sum.members.map(m=>`<span class="split-pill">${escapeHtml(m)}</span>`).join('');
+  const statsHtml = `
+    <div class="split-stats-grid">
+      <div class="split-stat-card"><div class="label">สมาชิก</div><div class="value">${sum.members.length} คน</div></div>
+      <div class="split-stat-card"><div class="label">รายการที่ใช้หาร</div><div class="value">${counts.itemCount} รายการ</div></div>
+      <div class="split-stat-card"><div class="label">ดึงจากรายจ่ายเดิม</div><div class="value">${counts.txCount} รายการ</div></div>
+      <div class="split-stat-card"><div class="label">รายการเพิ่มเอง</div><div class="value">${counts.customCount} รายการ</div></div>
+    </div>`;
   const itemsHtml = sum.items.length ? `<table class="split-table"><thead><tr><th>รายการ</th><th>คนที่จ่าย</th><th>จำนวนเงิน</th></tr></thead><tbody>${sum.items.map(item=>`<tr><td>${escapeHtml(item.label)}</td><td>${escapeHtml(item.paidBy)}</td><td>${formatMoney(item.amount)}</td></tr>`).join('')}</tbody></table>` : '<div class="split-empty">ยังไม่มีรายการให้หาร</div>';
+  const memberTableHtml = `<table class="split-table"><thead><tr><th>สมาชิก</th><th>จ่ายจริง</th><th>ควรจ่าย</th><th>สุทธิ</th></tr></thead><tbody>${sum.members.map(m=>{ const bal = Number(sum.balanceMap[m]||0); return `<tr><td>${escapeHtml(m)}</td><td>${formatMoney(sum.paidMap[m]||0)}</td><td>${formatMoney(sum.sharePerPerson)}</td><td class="${bal>=0?'split-balance-positive':'split-balance-negative'}">${formatSplitBalanceText(bal)}</td></tr>`; }).join('')}</tbody></table>`;
   const balances = sum.members.map(m=>{
-    const bal = sum.balanceMap[m] || 0;
-    return `<div class="split-summary-card"><div class="split-summary-top"><div style="font-weight:800">${escapeHtml(m)}</div><div>${formatMoney(sum.paidMap[m]||0)}</div></div><div class="hint">ควรออกคนละ ${formatMoney(sum.sharePerPerson)}</div><div style="margin-top:6px;font-weight:800;color:${bal>=0?'var(--green)':'var(--red)'}">${bal>=0?'รับคืน':'ต้องจ่าย'} ${formatMoney(Math.abs(bal))}</div></div>`;
+    const bal = Number(sum.balanceMap[m] || 0);
+    return `<div class="split-summary-card"><div class="split-summary-top"><div style="font-weight:800">${escapeHtml(m)}</div><div>${formatMoney(sum.paidMap[m]||0)}</div></div><div class="hint">ควรออกคนละ ${formatMoney(sum.sharePerPerson)}</div><div style="margin-top:6px;font-weight:800;color:${Math.abs(bal)<=0.009?'var(--primary)':bal>=0?'var(--green)':'var(--red)'}">${formatSplitBalanceText(bal)}</div></div>`;
   }).join('');
   const settlementHtml = sum.settlements.length ? `<table class="split-table"><thead><tr><th>จาก</th><th>ถึง</th><th>จำนวน</th></tr></thead><tbody>${sum.settlements.map(s=>`<tr><td>${escapeHtml(s.from)}</td><td>${escapeHtml(s.to)}</td><td>${formatMoney(s.amount)}</td></tr>`).join('')}</tbody></table>` : '<div class="split-empty">ยังไม่มีการโอนคืน ระบบคำนวณแล้วว่าทุกคนสมดุล</div>';
   box.innerHTML = `
     <div class="split-member-list">${memberChips}</div>
     <div class="split-total">หารคนละ ${formatMoney(sum.sharePerPerson)}</div>
+    <div class="hint" style="margin-top:6px">รวมทั้งหมด ${formatMoney(sum.total)} จาก ${counts.itemCount} รายการ</div>
+    <div style="height:12px"></div>
+    ${statsHtml}
     <div style="height:12px"></div>
     ${itemsHtml}
+    <div style="height:12px"></div>
+    ${memberTableHtml}
     <div style="height:12px"></div>
     <div class="split-summary-list">${balances}</div>
     <div style="height:12px"></div>
@@ -1186,7 +1268,7 @@ function renderSplitHistory(){
   document.getElementById('splitHistoryList').innerHTML = list.length ? list.map(g=>`
     <div class="split-item">
       <div class="split-item-top">
-        <div><div style="font-weight:800">${escapeHtml(g.title||'กลุ่มหาร')}</div><div class="hint">${escapeHtml(g.date||'-')} • ${g.members.length} คน • ${formatMoney(g.total||0)}</div></div>
+        <div><div style="font-weight:800">${escapeHtml(g.title||'กลุ่มหาร')}</div><div class="hint">${escapeHtml(g.date||'-')} • ${g.members.length} คน • ${(g.items||[]).length} รายการ • ${formatMoney(g.total||0)}</div></div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="mini-btn" type="button" onclick="loadSplitGroup('${g.id}')">เปิด</button>
           <button class="mini-btn" type="button" onclick="shareSplitReport('${g.id}')">แชร์</button>
@@ -1240,6 +1322,9 @@ function saveCurrentSplitGroup(){
     members: [...splitDraft.members],
     selectedTxIds: [...splitDraft.selectedTxIds],
     customItems: [...splitDraft.customItems],
+    items: summary.items,
+    paidMap: summary.paidMap,
+    balanceMap: summary.balanceMap,
     settlements: summary.settlements,
     total: summary.total,
     sharePerPerson: summary.sharePerPerson,
@@ -1252,10 +1337,13 @@ function saveCurrentSplitGroup(){
 }
 function buildSplitShareText(group){
   const summary = group ? {
-    members: group.members,
-    total: group.total,
-    sharePerPerson: group.sharePerPerson,
-    settlements: group.settlements||[]
+    members: group.members||[],
+    items: group.items || [],
+    total: group.total||0,
+    sharePerPerson: group.sharePerPerson||0,
+    settlements: group.settlements||[],
+    paidMap: group.paidMap||{},
+    balanceMap: group.balanceMap||{}
   } : calculateSplitSummary();
   const title = group?.title || splitDraft.title || 'กลุ่มหาร';
   const date = group?.date || splitDraft.date || new Date().toISOString().slice(0,10);
@@ -1266,8 +1354,20 @@ function buildSplitShareText(group){
     `รวมทั้งหมด: ${formatMoney(summary.total||0)}`,
     `หารคนละ: ${formatMoney(summary.sharePerPerson||0)}`,
     '',
-    'รายการโอนคืน:'
+    'สรุปรายสมาชิก:'
   ];
+  (summary.members||[]).forEach(name=>{
+    const paid = Number(summary.paidMap?.[name] || 0);
+    const bal = Number(summary.balanceMap?.[name] || 0);
+    lines.push(`- ${name}: จ่าย ${formatMoney(paid)} | ${formatSplitBalanceText(bal)}`);
+  });
+  lines.push('', 'รายการที่ใช้คำนวณ:');
+  if(summary.items?.length){
+    summary.items.forEach((item, idx)=>lines.push(`${idx+1}. ${item.label} | ${item.paidBy} | ${formatMoney(item.amount)}`));
+  }else{
+    lines.push('- ไม่มีรายการ');
+  }
+  lines.push('', 'รายการโอนคืน:');
   if(summary.settlements?.length){
     summary.settlements.forEach(s=>lines.push(`- ${s.from} จ่าย ${s.to} ${formatMoney(s.amount)}`));
   }else{
